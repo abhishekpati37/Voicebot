@@ -1,0 +1,260 @@
+import pyttsx3
+import pywhatkit as kit
+import speech_recognition as sr
+import webbrowser
+import datetime
+import os
+import pyautogui
+import wikipedia
+
+
+def takeCommand():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print('Listening..')
+        r.pause_threshold = 0.7
+        audio = r.listen(source)
+
+        try:
+            print("Recognizing...")
+            Query = r.recognize_google(audio, language='en-in')
+            print("the command is printed=", Query)
+
+        except Exception as e:
+            print(e)
+            print("Sorry Sir, Please Say Again")
+            return "None"
+        return Query
+
+
+def speak(audio):
+    engine = pyttsx3.init()
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)
+    engine.say(audio)
+    engine.runAndWait()
+
+
+def tellDay():
+    day = datetime.datetime.today().weekday() + 1
+    Day_dict = {1: 'Monday', 2: 'Tuesday',
+                3: 'Wednesday', 4: 'Thursday',
+                5: 'Friday', 6: 'Saturday',
+                7: 'Sunday'}
+
+    if day in Day_dict.keys():
+        day_of_the_week = Day_dict[day]
+        print(day_of_the_week)
+        speak("The day is " + day_of_the_week)
+
+
+
+def wishMe():
+    hour = int(datetime.datetime.now().hour)
+    if hour>= 0 and hour<= 12:
+        speak("Good morning sir, Have a good day, best of luck ")
+        print("Have a good day, best of luck..")
+
+    elif hour>=12 and hour<=18:
+        speak("Good Afternoon sir")
+        print("Have a good day, best of luck..")
+
+    else:
+        speak("Good Evening sir")
+
+    speak("I am your assistant, brs")
+
+def Take_query():
+
+    wishMe()
+
+    while (True):
+        query = takeCommand().lower()
+
+
+        if "open youtube" in query:
+            speak("what you will like to watch ?")
+            query = takeCommand().lower()
+            kit.playonyt(f"{query}")
+
+        elif "close youtube" in query:
+            os.system("taskkill /f /im msedge.exe")
+
+        elif "search" in query:
+            speak("searching")
+            webbrowser.open(query)
+
+        elif "open google" in query:
+            speak("what should I search ?")
+            query = takeCommand().lower()
+            webbrowser.open(f"{query}")
+            results = wikipedia.summary(query, sentences=2)
+            speak(results)
+
+        elif 'close google' in query:
+            os.system("taskkill /f /im msedge.exe")
+
+        elif 'wikipedia' in query:
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
+            speak("According to Wikipedia")
+            print(results)
+
+
+                                                         #Volume
+
+
+        elif "mute" in query:
+            pyautogui.press("volumemute")
+
+        elif "volume up" in query:
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+            pyautogui.press("volumeup")
+
+        elif "volume down" in query:
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+            pyautogui.press("volumedown")
+
+                                                    #chrome
+
+        elif 'open chrome' in query:
+            os.startfile('C:\Program Files\Google\Chrome\Application\chrome.exe')
+
+        elif 'close chrome' in query:
+            os.system("taskkill /f /im chrome.exe")
+
+        elif 'open new window' in query:
+            pyautogui.hotkey('ctrl', 'n')
+
+        elif 'open incognito window' in query:
+            pyautogui.hotkey('ctrl', 'shift', 'n')
+
+        elif 'open history' in query:
+            pyautogui.hotkey('ctrl', 'h')
+
+        elif 'open downloads' in query:
+            pyautogui.hotkey('ctrl', 'j')
+
+        elif 'previous tab' in query:
+            pyautogui.hotkey('ctrl', 'shift', 'tab')
+
+        elif 'next tab' in query:
+            pyautogui.hotkey('ctrl', 'tab')
+
+        elif 'close tab' in query:
+            pyautogui.hotkey('ctrl', 'w')
+
+                                                #Refresh
+
+        elif "refresh" in query:
+            pyautogui.hotkey('fn', 'f5')
+            pyautogui.hotkey('fn', 'f5')
+            pyautogui.hotkey('fn', 'f5')
+            pyautogui.hotkey('fn', 'f5')
+            pyautogui.hotkey('fn', 'f5')
+
+                                                #CMD
+
+        elif "open command prompt" in query:
+            os.system("start cmd")
+
+        elif "close command prompt" in query:
+            os.system("taskkill /f /im cmd.exe")
+
+                                                #Minimize
+
+        elif 'maximize' in query:
+            pyautogui.hotkey('alt', 'space')
+            pyautogui.press('x')
+
+        elif 'minimise' in query:
+            pyautogui.hotkey('alt', 'space')
+            pyautogui.press('n')
+
+                                                #Day and Time
+
+        elif "day" in query or "din" in query:
+            tellDay()
+
+        elif "time" in query:
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"The time is {strTime}")
+
+                                                #Shutdown, Sleep and Restart
+
+
+        elif "shut down" in query:
+            os.system("shutdown /s /t 5")
+
+        elif "restart the system" in query:
+            os.system("shutdown /r /t 5")
+
+                                                #Talk
+
+        elif "how are you" in query:
+            speak("I am fine, thank you ")
+            speak("How are you")
+
+        elif "fine" in query or "good" in query:
+            speak("good to know that you are fine")
+            speak("Tell me, how may i help you")
+            print("Command me")
+
+        elif "made you" in query or "create you" in query or "creative" in query:
+            speak("I am created by, Bhuvneswari")
+
+        elif "hello" in query:
+            speak("Hello sir")
+            speak("How are you")
+
+        elif "your name" in query:
+            speak("My Creater call me as, BRS.")
+            print("My name is BRS")
+
+        elif "you hear me" in query or "you hear us" in query or "listen me" in query or "listen us" in query:
+            speak("Yess, tell me how may i help you")
+
+        elif "describe" in query or "your self" in query:
+            speak("offcourse sir")
+            speak("I am programmed to do minor tasks like")
+            speak("Predict time, Opening youtube, open Google chrome,"
+                  "wikipedia searching, tell day and time and many more")
+
+        elif "virtual assistant" in query or "assistant" in query:
+            speak("A virtual assistant, also called A.I assistant or digital assistant, is an application"
+                  "program that understands natural language voice commands and complete tasks for the user")
+
+        elif "found" in query or "like" in query:
+            speak("voice assisatnt software can be found on, smart speakers, smartwatches, mobile phones, tablets and"
+                  "other devices. The most well known as, Alexa, Siri, Google Assistant")
+            print("Alexa (Amazone)")
+            print("Siri (Apple)")
+            print("Google Assistant (Google)")
+            print("Cortana (Microsoft)")
+
+                                           
+
+        elif "exit" in query or "bye" in query or "quit" in query or "stop" in query:
+            speak("Bye")
+            exit()
+
+
+if _name_ == '_main_':
+    Take_query()
